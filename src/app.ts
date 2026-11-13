@@ -12,6 +12,7 @@ import customerRoutes from './routes/customer.routes';
 import manufacturingRoutes from './routes/manufacturing.routes';
 import orderRoutes from './routes/order.routes';
 import userRoutes from './routes/user.routes';
+import { KEEP_ALIVE_USER_AGENT } from './utils/keepAlive';
 
 export function createApp() {
   const app = express();
@@ -21,7 +22,12 @@ export function createApp() {
   app.use(cors({ origin: env.clientOrigin, credentials: true }));
   app.use(express.json({ limit: '1mb' }));
   app.use(cookieParser());
-  app.use(morgan(env.nodeEnv === 'production' ? 'combined' : 'dev'));
+  app.use(
+    morgan(env.nodeEnv === 'production' ? 'combined' : 'dev', {
+      // Don't fill the logs with the server's own keep-alive pings.
+      skip: (req) => req.headers['user-agent'] === KEEP_ALIVE_USER_AGENT,
+    }),
+  );
 
   app.get('/api/health', (_req, res) => {
     res.json({ status: 'ok' });

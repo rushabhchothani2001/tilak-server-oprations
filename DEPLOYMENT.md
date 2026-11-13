@@ -157,8 +157,8 @@ It asks for a name, username and password (the password is hidden while you type
 
 ## Free-plan behaviour to know about
 
-- **Render sleeps after 15 minutes without traffic.** The next request wakes it, which takes about 30–60 seconds. If the first login after a quiet period shows an error or spins, wait a moment and try again.
-  *Optional fix:* create a free monitor at <https://uptimerobot.com> that requests `https://tilak-server-oprations.onrender.com/api/health` every 5 minutes. One always-awake service fits inside Render's 750 free hours per month.
+- **Render sleeps after 15 minutes without traffic — the server keeps itself awake.** Every 10 minutes it requests its own public `/api/health` (Render provides the URL as `RENDER_EXTERNAL_URL`, so there is nothing to set). In the Render logs you will see `Keep-alive: pinging … every 10 min` at startup; the pings themselves are not logged.
+  One always-awake service uses about 744 of Render's 750 free hours a month, so keep only **one** free web service on the account. After a deploy or a restart by Render, the first visit can still take 30–60 seconds; from then on it stays awake. To turn it off, set `KEEP_ALIVE_MINUTES=0`.
 - **Atlas M0** gives 512 MB of storage — enough for many thousands of orders.
 - **Auto-deploy:** every push to `main` redeploys automatically — the server on Render, the frontend on Vercel.
 

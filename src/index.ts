@@ -3,6 +3,7 @@ import { connectDB } from './config/db';
 import { assertAuthConfig, env } from './config/env';
 import { runMigrations } from './config/migrations';
 import { UserModel } from './models/User';
+import { startKeepAlive } from './utils/keepAlive';
 
 async function start() {
   assertAuthConfig();
@@ -16,6 +17,7 @@ async function start() {
   const app = createApp();
   app.listen(env.port, () => {
     console.log(`API server running on http://localhost:${env.port}`);
+    startKeepAlive();
   });
 }
 

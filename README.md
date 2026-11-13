@@ -41,6 +41,8 @@ Step-by-step free hosting (MongoDB Atlas + Render + Vercel): see **[DEPLOYMENT.m
 | `JWT_SECRET` | — (**required**, min 32 chars) | Signs login sessions. Keep secret; changing it logs everyone out |
 | `COOKIE_SECURE` | `false` | Set `true` when served over HTTPS |
 | `TRUST_PROXY` | `0` | Number of proxies in front of the app. `2` on Render behind the Vercel rewrite |
+| `KEEP_ALIVE_URL` | Render's `RENDER_EXTERNAL_URL` | Public URL the server pings so free hosts don't put it to sleep. Off when unset (local development) |
+| `KEEP_ALIVE_MINUTES` | `10` | Minutes between pings (keep under the host's 15-minute idle limit). `0` turns it off |
 
 ## Scripts
 

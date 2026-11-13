@@ -21,6 +21,14 @@ export const env = {
    * "true" means 1. On Render behind a Vercel rewrite use 2 (Vercel edge + Render load balancer).
    */
   trustProxy: parseTrustProxy(process.env.TRUST_PROXY),
+  /**
+   * Public URL the server pings to stay awake on hosts that sleep when idle (Render's free plan
+   * sleeps after 15 minutes without traffic). Render sets RENDER_EXTERNAL_URL automatically;
+   * KEEP_ALIVE_URL overrides it. With neither set (local development) the ping is off.
+   */
+  keepAliveUrl: process.env.KEEP_ALIVE_URL || process.env.RENDER_EXTERNAL_URL || '',
+  /** Minutes between pings; 0 turns it off. Must stay under the host's idle timeout. */
+  keepAliveMinutes: process.env.KEEP_ALIVE_MINUTES === undefined ? 10 : Number(process.env.KEEP_ALIVE_MINUTES),
 };
 
 /** Fails fast when the server is started without a usable session secret. */
