@@ -57,6 +57,18 @@ const orderSchema = new Schema(
     },
 
     laminated: { type: Boolean, required: true },
+    // Size of the lamination sheet, e.g. 12 × 15 inch. Only when laminated.
+    laminationSize: {
+      type: new Schema(
+        {
+          length: { type: Number, required: true, min: 0 },
+          width: { type: Number, required: true, min: 0 },
+          unit: { type: String, enum: SIZE_UNITS, default: 'inch' },
+        },
+        { _id: false },
+      ),
+      default: undefined,
+    },
     quantity: { type: Number, required: true, min: 1 },
     // Admin-only commercial details. Missing on orders placed before pricing existed.
     pricing: { type: pricingSchema, default: undefined },

@@ -60,6 +60,13 @@ export const createOrderSchema = z
       fluted: flutedSchema,
     }),
     laminated: z.boolean({ required_error: 'Select laminated yes or no', invalid_type_error: 'Select laminated yes or no' }),
+    // Required when laminated; measured in the same unit as the box size.
+    laminationSize: z
+      .object({
+        length: positiveNumber('Lamination length'),
+        width: positiveNumber('Lamination width'),
+      })
+      .nullish(),
     quantity: z
       .number({ required_error: 'Quantity is required', invalid_type_error: 'Quantity must be a number' })
       .int('Quantity must be a whole number')
@@ -79,11 +86,16 @@ export const createOrderSchema = z
     if (order.paperType === 'printed' && !order.printType) {
       ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['printType'], message: 'Select 4-color or single color' });
     }
+    if (order.laminated && !order.laminationSize) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['laminationSize'], message: 'Enter the lamination size' });
+    }
   })
-  // Print type is meaningless for plain paper, so drop it.
+  // Print type is meaningless for plain paper and lamination size without lamination, so drop them.
   .transform((order) => ({
     ...order,
     printType: order.paperType === 'printed' ? order.printType ?? undefined : undefined,
+    laminationSize:
+      order.laminated && order.laminationSize ? { ...order.laminationSize, unit: order.size.unit } : undefined,
   }));
 
 export type CreateOrderInput = z.infer<typeof createOrderSchema>;

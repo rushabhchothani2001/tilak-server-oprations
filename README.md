@@ -74,7 +74,7 @@ All endpoints except `/api/health` and `/api/auth/login` need a logged-in sessio
 | Admin | PATCH | `/api/users/:id` | Update name, role, active, or reset password |
 | Admin | GET / POST | `/api/customers` | List (`?search=`) / create customers |
 | Admin | GET / PUT / DELETE | `/api/customers/:id` | Read / update / delete (blocked if customer has orders) |
-| Admin | GET / POST | `/api/orders` | List (`?status=&customer=`) / place order (`productName`, `ratePerBox` and `gstApplicable` are required; amounts are computed by the server, GST 5%) |
+| Admin | GET / POST | `/api/orders` | List (`?status=&customer=`) / place order (`productName`, `ratePerBox` and `gstApplicable` are required, and `laminationSize` {length, width} when `laminated`; amounts are computed by the server, GST 5%) |
 | Admin | GET / DELETE | `/api/orders/:id` | Order with customer details / delete |
 | Admin, Worker | GET | `/api/manufacturing/orders` | Orders without customer data or prices (`?status=active` or a status) |
 | Admin, Worker | GET | `/api/manufacturing/orders/:id` | Order without customer data |
