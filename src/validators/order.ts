@@ -64,6 +64,15 @@ export const createOrderSchema = z
       .number({ required_error: 'Quantity is required', invalid_type_error: 'Quantity must be a number' })
       .int('Quantity must be a whole number')
       .positive('Quantity must be at least 1'),
+    ratePerBox: z
+      .number({ required_error: 'Enter the rate per box', invalid_type_error: 'Rate must be a number' })
+      .positive('Rate must be more than ₹0')
+      .max(1_000_000, 'Rate is too large')
+      .refine((v) => Math.abs(v * 100 - Math.round(v * 100)) < 1e-6, 'Use at most 2 decimals (paise)'),
+    gstApplicable: z.boolean({
+      required_error: 'Select whether GST applies',
+      invalid_type_error: 'Select whether GST applies',
+    }),
     expectedDeliveryDate: z.coerce.date({ errorMap: () => ({ message: 'Select the expected delivery date' }) }),
   })
   .superRefine((order, ctx) => {

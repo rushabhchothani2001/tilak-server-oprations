@@ -25,5 +25,8 @@ export const WORKER_STATUSES = [
 export const ORDER_STATUSES = ['order_placed', ...WORKER_STATUSES] as const;
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
 
+/** GST added to the order amount when "Applicable GST" is Yes. */
+export const GST_RATE_PERCENT = 5;
+
 /** When an order reaches this status the worker must record the produced quantity. */
 export const FINAL_STATUS: OrderStatus = 'ready_to_shipment';

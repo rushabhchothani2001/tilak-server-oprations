@@ -12,6 +12,19 @@ const statusHistorySchema = new Schema(
   { _id: false },
 );
 
+// Amounts are in rupees and always computed on the server (see utils/pricing.ts).
+const pricingSchema = new Schema(
+  {
+    ratePerBox: { type: Number, required: true, min: 0 },
+    gstApplicable: { type: Boolean, required: true },
+    gstRate: { type: Number, required: true, min: 0 },
+    subtotal: { type: Number, required: true, min: 0 },
+    gstAmount: { type: Number, required: true, min: 0 },
+    total: { type: Number, required: true, min: 0 },
+  },
+  { _id: false },
+);
+
 const orderSchema = new Schema(
   {
     orderNumber: { type: String, required: true, unique: true },
@@ -45,6 +58,8 @@ const orderSchema = new Schema(
 
     laminated: { type: Boolean, required: true },
     quantity: { type: Number, required: true, min: 1 },
+    // Admin-only commercial details. Missing on orders placed before pricing existed.
+    pricing: { type: pricingSchema, default: undefined },
     expectedDeliveryDate: { type: Date, required: true },
 
     status: { type: String, enum: ORDER_STATUSES, default: 'order_placed', index: true },

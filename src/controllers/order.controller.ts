@@ -5,6 +5,7 @@ import { nextSequence } from '../models/Counter';
 import { HttpError } from '../middleware/error';
 import { isObjectId } from '../middleware/validate';
 import { ORDER_STATUSES, OrderStatus } from '../constants/order';
+import { computePricing } from '../utils/pricing';
 import type { CreateOrderInput } from '../validators/order';
 
 const CUSTOMER_SUMMARY_FIELDS = 'name companyName phone';
@@ -36,7 +37,7 @@ export async function getOrder(req: Request, res: Response) {
 }
 
 export async function createOrder(req: Request, res: Response) {
-  const input = req.body as CreateOrderInput;
+  const { ratePerBox, gstApplicable, ...input } = req.body as CreateOrderInput;
 
   const customerExists = await CustomerModel.exists({ _id: input.customer });
   if (!customerExists) {
@@ -46,6 +47,8 @@ export async function createOrder(req: Request, res: Response) {
   const seq = await nextSequence('order');
   const order = await OrderModel.create({
     ...input,
+    // Amounts are always computed here, never taken from the browser.
+    pricing: computePricing(input.quantity, ratePerBox, gstApplicable),
     orderNumber: `TI-${String(seq).padStart(5, '0')}`,
     status: 'order_placed',
     statusHistory: [{ status: 'order_placed', changedBy: req.user?.name ?? '', changedAt: new Date() }],

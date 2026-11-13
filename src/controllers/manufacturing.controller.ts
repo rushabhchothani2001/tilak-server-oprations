@@ -5,10 +5,10 @@ import { FINAL_STATUS, ORDER_STATUSES } from '../constants/order';
 import type { UpdateStatusInput } from '../validators/order';
 
 /**
- * Workers only see order specifications — never customer details.
- * Every query in this controller excludes the customer field.
+ * Workers only see order specifications — never customer details or prices.
+ * Every query in this controller excludes those fields.
  */
-const HIDE_CUSTOMER = '-customer';
+const HIDE_CUSTOMER = '-customer -pricing';
 
 export async function listManufacturingOrders(req: Request, res: Response) {
   const { status } = req.query;
