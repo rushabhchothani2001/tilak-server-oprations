@@ -69,7 +69,8 @@ All endpoints except `/api/health` and `/api/auth/login` need a logged-in sessio
 | Public | GET | `/api/health` | Health check |
 | Public | POST | `/api/auth/login` | `{ username, password }` — 10 failed attempts per 15 min per IP + username |
 | Public | POST | `/api/auth/logout` | Clear session |
-| Logged in | GET | `/api/auth/me` | Current user |
+| Logged in | GET | `/api/auth/me` | Current user (includes `language`: en / hi / gu) |
+| Logged in | PATCH | `/api/auth/me/preferences` | `{ language }` — save your own app language (admins and workers) |
 | Admin | GET / POST | `/api/users` | List / create users |
 | Admin | PATCH | `/api/users/:id` | Update name, role, active, or reset password |
 | Admin | GET / POST | `/api/customers` | List (`?search=`) / create customers |

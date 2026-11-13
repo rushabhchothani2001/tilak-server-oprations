@@ -21,6 +21,7 @@ export async function createUser(req: Request, res: Response) {
     name: input.name,
     username: input.username,
     role: input.role,
+    language: input.language,
     passwordHash: await hashPassword(input.password),
   });
   res.status(201).json(publicUser(user));
@@ -44,6 +45,7 @@ export async function updateUser(req: Request, res: Response) {
   let signOutEverywhere = false;
 
   if (input.name !== undefined) user.name = input.name;
+  if (input.language !== undefined) user.language = input.language;
   if (input.role !== undefined && input.role !== user.role) {
     user.role = input.role;
     signOutEverywhere = true;

@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
-import { login, logout, me } from '../controllers/auth.controller';
+import { login, logout, me, updatePreferences } from '../controllers/auth.controller';
 import { requireAuth } from '../middleware/auth';
 import { asyncHandler } from '../middleware/error';
 import { validateBody } from '../middleware/validate';
-import { loginSchema } from '../validators/user';
+import { loginSchema, preferencesSchema } from '../validators/user';
 
 const router = Router();
 
@@ -27,5 +27,6 @@ const loginLimiter = rateLimit({
 router.post('/login', loginLimiter, validateBody(loginSchema), asyncHandler(login));
 router.post('/logout', asyncHandler(logout));
 router.get('/me', requireAuth, asyncHandler(me));
+router.patch('/me/preferences', requireAuth, validateBody(preferencesSchema), asyncHandler(updatePreferences));
 
 export default router;
