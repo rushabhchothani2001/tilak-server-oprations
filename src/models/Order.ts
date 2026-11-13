@@ -16,6 +16,8 @@ const orderSchema = new Schema(
   {
     orderNumber: { type: String, required: true, unique: true },
     customer: { type: Schema.Types.ObjectId, ref: 'Customer', required: true, index: true },
+    // What the boxes are for, e.g. "Mango juice 1L carton". Empty on orders placed before this field existed.
+    productName: { type: String, trim: true, default: '' },
 
     size: {
       length: { type: Number, required: true, min: 0 },

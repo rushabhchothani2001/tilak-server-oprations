@@ -41,6 +41,11 @@ const flutedSchema = z.preprocess(
 export const createOrderSchema = z
   .object({
     customer: z.string({ required_error: 'Select a customer' }).regex(/^[a-f\d]{24}$/i, 'Select a customer'),
+    productName: z
+      .string({ required_error: 'Enter the product name', invalid_type_error: 'Enter the product name' })
+      .trim()
+      .min(1, 'Enter the product name')
+      .max(120, 'Product name is too long (120 characters max)'),
     size: z.object({
       length: positiveNumber('Length'),
       width: positiveNumber('Width'),
