@@ -17,7 +17,7 @@ export function createApp() {
   const app = express();
 
   app.disable('x-powered-by');
-  if (env.trustProxy) app.set('trust proxy', 1);
+  if (env.trustProxy > 0) app.set('trust proxy', env.trustProxy);
   app.use(cors({ origin: env.clientOrigin, credentials: true }));
   app.use(express.json({ limit: '1mb' }));
   app.use(cookieParser());

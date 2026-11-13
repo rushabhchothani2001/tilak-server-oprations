@@ -2,6 +2,12 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+function parseTrustProxy(value: string | undefined): number {
+  if (value === 'true') return 1;
+  const hops = Number(value);
+  return Number.isInteger(hops) && hops > 0 ? hops : 0;
+}
+
 export const env = {
   nodeEnv: process.env.NODE_ENV ?? 'development',
   port: Number(process.env.PORT) || 5000,
@@ -10,8 +16,11 @@ export const env = {
   jwtSecret: process.env.JWT_SECRET ?? '',
   /** Only send the session cookie over HTTPS. Enable when served behind HTTPS. */
   cookieSecure: process.env.COOKIE_SECURE === 'true',
-  /** Set when running behind a reverse proxy (nginx etc.) so client IPs are read correctly. */
-  trustProxy: process.env.TRUST_PROXY === 'true',
+  /**
+   * Number of proxies in front of the app, so the real visitor IP is used for login limits.
+   * "true" means 1. On Render behind a Vercel rewrite use 2 (Vercel edge + Render load balancer).
+   */
+  trustProxy: parseTrustProxy(process.env.TRUST_PROXY),
 };
 
 /** Fails fast when the server is started without a usable session secret. */

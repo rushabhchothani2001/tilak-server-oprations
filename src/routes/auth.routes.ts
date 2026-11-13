@@ -8,10 +8,16 @@ import { loginSchema } from '../validators/user';
 
 const router = Router();
 
-// Slow down password guessing: 10 failed attempts per 15 minutes per IP.
+// Slow down password guessing: 10 failed attempts per 15 minutes for each IP + username pair.
+// Keying by username too means one bad actor can't lock every user out when many people
+// share an IP (an office network, or a proxy whose IP isn't forwarded correctly).
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 10,
+  keyGenerator: (req) => {
+    const username = typeof req.body?.username === 'string' ? req.body.username.trim().toLowerCase() : '';
+    return `${req.ip}|${username.slice(0, 50)}`;
+  },
   skipSuccessfulRequests: true,
   standardHeaders: 'draft-7',
   legacyHeaders: false,

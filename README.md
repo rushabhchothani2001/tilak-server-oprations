@@ -26,6 +26,10 @@ node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
 
 **Forgot the admin password?** Run `npm run create-admin` again with the same username to reset it.
 
+## Deployment
+
+Step-by-step free hosting (MongoDB Atlas + Render + Vercel): see **[DEPLOYMENT.md](DEPLOYMENT.md)**.
+
 ## Environment variables (`.env`)
 
 | Variable | Default | Purpose |
@@ -36,7 +40,7 @@ node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
 | `NODE_ENV` | `development` | `production` also serves a built client from `../client/dist` if present |
 | `JWT_SECRET` | — (**required**, min 32 chars) | Signs login sessions. Keep secret; changing it logs everyone out |
 | `COOKIE_SECURE` | `false` | Set `true` when served over HTTPS |
-| `TRUST_PROXY` | `false` | Set `true` behind a reverse proxy (nginx etc.) |
+| `TRUST_PROXY` | `0` | Number of proxies in front of the app. `2` on Render behind the Vercel rewrite |
 
 ## Scripts
 
@@ -61,7 +65,7 @@ All endpoints except `/api/health` and `/api/auth/login` need a logged-in sessio
 | Access | Method | Endpoint | Description |
 | --- | --- | --- | --- |
 | Public | GET | `/api/health` | Health check |
-| Public | POST | `/api/auth/login` | `{ username, password }` — 10 failed attempts per 15 min per IP |
+| Public | POST | `/api/auth/login` | `{ username, password }` — 10 failed attempts per 15 min per IP + username |
 | Public | POST | `/api/auth/logout` | Clear session |
 | Logged in | GET | `/api/auth/me` | Current user |
 | Admin | GET / POST | `/api/users` | List / create users |
